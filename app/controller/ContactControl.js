@@ -19,10 +19,17 @@ Ext.define('YzMobile.controller.ContactControl', {
         control: {
             contactList: {
                 initialize: function () {
-                    Ext.ComponentQuery.query('#infomore')[0].show();
+                  //  WYTool.queryComponent('#infomore').show();
                     this.listInfo = {type: 'name', index: 0, value: '', isLast: false}; // list显示需要的相关的参数
                     this.listBackStack = []; // 缓存返回需要的数据
                 },
+                //show: function () {
+                //    debugger;
+                //},
+                //hide:function(){
+                //    WYTool.queryComponent('#infomore').hide();
+                //},
+
                 itemtap: 'onContactListTap',
                 itemtaphold: 'onContactListLongTap'
             },
@@ -30,11 +37,21 @@ Ext.define('YzMobile.controller.ContactControl', {
                 initialize: function () {
                     WYTool.queryComponent('#infofunction').hide();
                     WYTool.queryComponent('#showByWhat').hide();
+                    WYTool.queryComponent('#infoBack').hide();
+
 
                     var store = Ext.getStore('ContactSearchStore');
                     Ext.data.proxy.SkJsonp.setUrl(localStorage.getItem('proxyUrl'));
                     Ext.data.proxy.SkJsonp.loadStore(store, 'GetAdressSearch', null);
                 },
+
+                destroy: function () {
+                    if(this.listBackStack.length > 0){
+                        WYTool.queryComponent('#infoBack').show();
+                        WYTool.queryComponent('#infofunction').hide();
+                    }
+                },
+
                 itemsingletap: function (list, index, target, record, e, eOpts) {
                     var popup = Ext.create('YzMobile.view.contact.ContactPopup');
                     popup.onDataSet(record);
@@ -43,8 +60,14 @@ Ext.define('YzMobile.controller.ContactControl', {
             },
             contactmain: {
                 show: function () {
+                    WYTool.queryComponent('#infomore').show();
+
+                },
+                hide: function () {
+                    WYTool.queryComponent('#infomore').hide();
 
                 }
+
                 //hide: function () {
                 //    Ext.ComponentQuery.query('#infomore')[0].hide();
                 //}
@@ -368,11 +391,12 @@ Ext.define('YzMobile.controller.ContactControl', {
                 hideOnMaskTap: true,
                 itemId: 'showByWhat',
                 items: [
+                    {xtype: 'button', text: '直接搜索', itemId: 'contact_search'},
+                    {xtype: 'spacer', height: 10},
                     {xtype: 'button', text: '按姓名', itemId: 'showByName'}, // 按名字显示
                     {xtype: 'spacer', height: 10},
                     {xtype: 'button', text: '按行政区划', itemId: 'showByArea'}, // 按行政区划显示
-                    {xtype: 'spacer', height: 10},
-                    {xtype: 'button', text: '直接搜索', itemId: 'contact_search'}
+
                 ]
             });
         }
